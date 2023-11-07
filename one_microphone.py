@@ -52,6 +52,7 @@ def thread_recognize():
             if MAGIC_WORD == word.lower():
                 print("DID SOMEBODY SAY THANKSGIVING!")
                 playsound('smol.wav')
+                break
         
         print()
     except Exception as ex:
@@ -61,13 +62,15 @@ def thread_recognize():
 
 if __name__ =="__main__":
 
-    for i in range(50):
+    for i in range(20):
 
         print("Iteration ", i)
 
         # Create and start multiple threads
         listening_thread = threading.Thread(target=thread_listen)
         recognize_thread = threading.Thread(target=thread_recognize)
+        listening_thread.daemon = True
+        recognize_thread.daemon = True
         listening_thread.start()
         recognize_thread.start()
 
