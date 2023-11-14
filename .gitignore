@@ -1,2 +1,5 @@
 # Ignore environment folder (called potato_env)
 potato_env
+
+# Ignore build folder from pyinstaller
+build
