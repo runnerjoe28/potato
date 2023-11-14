@@ -2,10 +2,10 @@ REM This assumes that the user has cloned or otherwise downloaded the github rep
 REM Must have also moved into the repo folder
 
 REM Save the working directory
-set "WORKING_DIR=%CD%"
+set "WORKING_DIR=%~dp0"
 
 REM Change the working directory to the folder where this file is located
-cd %~dp0
+cd %WORKING_DIR%
 
 REM Run program as a background process
 wscript.exe run.vbs
