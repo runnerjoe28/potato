@@ -1,7 +1,7 @@
 # Python script that employs the thread swapping approach to listen for keyword
 
 # Library imports
-import threading, os
+import threading
 import speech_recognition as sr
 from playsound import playsound
 
@@ -27,11 +27,11 @@ def thread_listen():
         with sr.Microphone() as source:
 
             # Listen for 10 seconds
-            print("Begin speech listening")
+            # print("Begin speech listening")
             # LOOK AT SNOWBOY SUPPORT
             global speech_audio_active
             speech_audio_active = speech_recognizer.listen(source, phrase_time_limit=LISTEN_TIME)
-            print("Done listening")
+            # print("Done listening")
 
     except Exception as ex:
         print("An error was encountered during listening", ex)
@@ -40,7 +40,7 @@ def thread_recognize():
     global speech_audio_record
     if (speech_audio_record == None):
         return
-    print("Recognition Thread")
+    # print("Recognition Thread")
     try:
         # Surround in try catch to avoid any thrown errors from recognizition fails
         raw_text = speech_recognizer.recognize_google(speech_audio_record)
@@ -48,13 +48,13 @@ def thread_recognize():
 
         # Cycle through each word spoken to search for magic word
         for word in words_spoken:
-            print(word.lower())
+            # print("\t", word.lower())
             if MAGIC_WORD == word.lower():
                 print("DID SOMEBODY SAY THANKSGIVING!")
                 playsound('smol.wav')
                 break
         
-        print()
+        # print()
     except Exception as ex:
         print("An error was encountered during recognizition", ex)
 
@@ -64,7 +64,8 @@ if __name__ =="__main__":
 
     for i in range(20):
 
-        print("Iteration ", i)
+        # print("--------------------------------")
+        # print("Iteration ", i)
 
         # Create and start multiple threads
         listening_thread = threading.Thread(target=thread_listen)
