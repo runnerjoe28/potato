@@ -1,6 +1,7 @@
 # Python script that employs the thread swapping approach to listen for keyword
 
 # Library imports
+from pathlib import Path
 import threading
 import speech_recognition as sr
 from playsound import playsound
@@ -15,6 +16,11 @@ speech_recognizer = sr.Recognizer()
 # Global variables for thread switches
 speech_audio_active = None
 speech_audio_record = None
+
+# Global variable for audio file and file path
+audio_file_name = "song_opening.wav"
+audio_folder = Path(__file__).parent.resolve() / "audio"
+audio_file_path = audio_folder / audio_file_name
 
 ################################################################################
 
@@ -51,7 +57,7 @@ def thread_recognize():
             # print("\t", word.lower())
             if MAGIC_WORD == word.lower():
                 print("DID SOMEBODY SAY THANKSGIVING!")
-                playsound('smol.wav')
+                playsound(str(audio_file_path))
                 break
         
         # print()
