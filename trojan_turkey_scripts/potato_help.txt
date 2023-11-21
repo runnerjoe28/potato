@@ -1,0 +1,28 @@
+potato.cmd [command] [subcommand] [FILE]
+
+    audio - lists all audio files
+
+    build - builds some of the elements of the virus
+
+        all - builds the entire package, requires audio file name
+
+        clean - undos the effects of running `build all`
+
+        exe - builds just the python executable
+
+        req - regenerates requirements.txt file for python venv
+
+        venv - builds/rebuilds python venv, updates terminal sesh
+
+
+    help - menu of possible inputs
+
+    git - regenerates requirements.txt and full build before commits
+
+    run - runs some set of the functionalities
+
+        all - runs fully packaged virus
+
+        exe - runs only python executable of fully packaged virus
+
+    py - runs only the python file

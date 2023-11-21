@@ -1,29 +1,24 @@
 @echo off
 setlocal
 
-rem Ensure that the required arguments are provided
-if "%1"=="" (
-    echo Usage: potato.cmd [command] [subcommand] [FILE]
-    exit /b 1
-)
-
-rem Parse the command
 set "command=%1"
 shift
 
-rem Process the command
+rem Process the command to its function
 if /i "%command%"=="audio" (
     call :audio %*
 ) else if /i "%command%"=="build" (
     call :build %*
 ) else if /i "%command%"=="git" (
-    call :git %*
-) else if /i "%command%"=="run" (
+    call :git
+) else if /i "%command%"=="help" (
+    call :help
+)else if /i "%command%"=="run" (
     call :run %*
-) else if /i "%command%"=="py" (
-    call :py %*
 ) else (
     echo Unknown command: %command%
+    echo Usage: potato.cmd [command] [subcommand] [FILE]
+    echo Run 'potato.cmd help' for more information
     exit /b 1
 )
 
@@ -32,94 +27,130 @@ rem End of script
 exit /b 0
 
 rem Functions
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :audio
-rem List all audio files in the /audio folder
-dir /b /s /a-d .\audio\*.mp3
+echo Listing all audio files
+echo -----------------------
+dir /b /a-d .\audio
 exit /b 0
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :build
 rem Build elements of the program
-if "%1"=="all" (
-    call :build_all %2
-) else if "%1"=="clean" (
+if "%2"=="all" (
+    call :build_all %3
+) else if "%2"=="clean" (
     call :clean
-) else if "%1"=="exe" (
+) else if "%2"=="exe" (
     call :build_exe
-) else if "%1"=="req" (
+) else if "%2"=="req" (
     call :regen_requirements
-) else if "%1"=="venv" (
+) else if "%2"=="venv" (
     call :build_venv
 ) else (
-    echo Unknown build subcommand: %1
+    echo Unknown build subcommand: %2
+    echo Run 'potato.cmd help' for more information
     exit /b 1
 )
 exit /b 0
 
+
 :build_all
-rem Build the entire package
+if "%1"=="" (
+    echo Error: no audio file specified
+    exit /b 1
+)
 echo Building the entire package with audio file: %1
-rem Add your build process here
+del /s /q dist
+if exist "audio\%1" (
+    copy "audio\%1" "dist\audio\"
+) else (
+    echo Error: File '%1' not found in '\audio'.
+    exit /b 1
+)
+call :build_exe
+copy trojan_turkey_scripts\run.vbs dist
+copy trojan_turkey_scripts\trojan_turkey_flash.cmd dist
+
 exit /b 0
+
 
 :clean
-rem Undo the effects of running `build all`
 echo Cleaning up the build
-rem Add your cleanup process here
+rem Deletes the run on startup configuration
+REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "one_microphone" /F
 exit /b 0
+
 
 :build_exe
-rem Build just the python executable
 echo Building the Python executable
-rem Add your build process here
+pyinstaller -F one_microphone.py
+del one_microphone.spec
 exit /b 0
+
 
 :regen_requirements
-rem Regenerate requirements.txt file for python venv
 echo Regenerating requirements.txt
-rem Add your requirements regeneration process here
+pip freeze --all > requirements.txt
 exit /b 0
 
+
 :build_venv
-rem Build/rebuild python venv and update terminal session
 echo Building/rebuilding Python venv and updating terminal session
-rem Add your venv build process here
+python -m venv potato_env
+potato_env\Scripts\activate
+py -m pip install -r requirements.txt
 exit /b 0
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :git
 rem Regenerate requirements.txt and perform a full build before commits
 echo Performing Git-related tasks
 call :regen_requirements
-call :build_all
-rem Add your git-related tasks here
+call :build_all song_opening.wav
 exit /b 0
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:help
+rem Displays information about the program and how to run it
+type trojan_turkey_scripts\potato_help.txt
+exit /b 0
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :run
 rem Run some set of functionalities
-if "%1"=="all" (
+if "%2"=="all" (
     call :run_all
-) else if "%1"=="exe" (
+) else if "%2"=="exe" (
     call :run_exe
+) else if "%2"=="py" (
+    call :run_py    
 ) else (
-    echo Unknown run subcommand: %1
+    echo Unknown run subcommand: %2
+    echo Run 'potato.cmd help' for more information
     exit /b 1
 )
 exit /b 0
 
+
 :run_all
-rem Run fully packaged software
 echo Running fully packaged software
-rem Add your run all process here
+cd dist
+trojan_turkey_flash.cmd
 exit /b 0
+
 
 :run_exe
-rem Run only the python executable of fully packaged software
 echo Running Python executable of fully packaged software
-rem Add your run exe process here
+dist\one_microphone.exe
 exit /b 0
 
-:py
-rem Run only the python file
+
+:run_py
 echo Running Python file
-rem Add your run python file process here
+python one_microphone.py
 exit /b 0
