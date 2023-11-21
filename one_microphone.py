@@ -19,7 +19,7 @@ speech_audio_record = None
 
 # Global variable for audio file and file path
 audio_file_name = "song_opening.wav"
-audio_folder = Path(__file__).parent.resolve() / "audio"
+audio_folder = Path().resolve() / "audio"
 audio_file_path = audio_folder / audio_file_name
 
 ################################################################################
