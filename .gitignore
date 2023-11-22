@@ -5,3 +5,4 @@ potato_env
 build
 
 # Ignore the dist folder to package the virus
+dist
