@@ -25,4 +25,4 @@ potato.cmd [command] [subcommand] [FILE]
 
         exe - runs only python executable of fully packaged virus
 
-    py - runs only the python file
+        py - runs only the python file
